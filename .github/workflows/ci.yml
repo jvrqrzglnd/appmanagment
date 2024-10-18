@@ -40,10 +40,11 @@ jobs:
           base64 -d keystore-b64.txt > keystore.jks
 
       - name: Get keystore file  path
+        id: keystoreFile
         #run: |
           #TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
           #echo "jksfile=$(find "${RUNNER_TEMP}"/keystore.jks)" >> $GITHUB_OUTPUT
-        run: echo "jksfile=$(find /home/runner/work/appmanagment/keystore.jks)" >> $GITHUB_OUTPUT
+        run: echo "jksfile=$(find app/*.jks)" >> $GITHUB_OUTPUT
 
       - name: Build App
         env:
@@ -56,5 +57,10 @@ jobs:
       - name: Get release file aab path
         id: releaseAab
         run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
+
+      - name: print results
+        run: |
+          echo "JKS file path: ${{ steps.keystoreFile.outputs.jksfile }}"
+          echo "AAB file path: ${{ steps.releaseAab.outputs.aabfile }}"
 
 
