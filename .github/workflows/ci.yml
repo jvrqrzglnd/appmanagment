@@ -33,6 +33,9 @@ jobs:
         run: |
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
+      - name: Get keystore file  path
+        run: echo "jksfile=$(find *.jks)" >> $GITHUB_OUTPUT
+
       - name: Build App
         env:
           RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
