@@ -10,6 +10,9 @@
 .DS_Store
 /build
 /captures
+/app/keystore
+/app/keystore/devtestjks.jks
 .externalNativeBuild
 .cxx
 local.properties
+/app/keystore/

@@ -11,6 +11,21 @@ android {
     namespace = "com.kripto.appmanager"
     compileSdk = 34
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("${projectDir}" + "/keystore/devtestjks.jks")
+            storePassword = "developer"
+            keyAlias = "developer"
+            keyPassword = "developer"
+        }
+        getByName("debug"){
+            storeFile = file("${projectDir}" + "/keystore/devtestjks.jks")
+            storePassword = "developer"
+            keyAlias = "developer"
+            keyPassword = "developer"
+        }
+        //.\gradlew signingReport
+    }
     defaultConfig {
         applicationId = "com.kripto.appmanager"
         minSdk = 24
@@ -25,12 +40,20 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("debug") {
             isMinifyEnabled = false
+            /*proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )*/
+        }
+        getByName("release") {
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     /*compileOptions {
