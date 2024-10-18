@@ -45,8 +45,13 @@
 
 
 -keepclassmembers,allowobfuscation class * {
- # @com.google.gson.annotations.SerializedName <fields>;
+  @com.google.gson.annotations.SerializedName <fields>;
 }
+-keep class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+-keepnames class com.fasterxml.jackson.databind.** { *; }
+-dontwarn com.fasterxml.jackson.databind.**
 #--------------------------------fix problemnav
 -keep class androidx.navigation.fragment.NavHostFragment
 -keepnames class * extends android.os.Parcelable
