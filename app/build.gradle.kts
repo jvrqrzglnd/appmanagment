@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     id("androidx.room")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -109,6 +110,10 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
+
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
 
     implementation(project(":ui"))
