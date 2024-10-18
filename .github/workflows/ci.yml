@@ -34,7 +34,7 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
       - name: Get keystore file  path
-        run: echo "jksfile=$(find app/*.jks)" >> $GITHUB_OUTPUT
+        run: echo "jksfile=$(find /home/runner/work/appmanagment/appmanagment/keystore.jk)" >> $GITHUB_OUTPUT
 
       - name: Build App
         env:
