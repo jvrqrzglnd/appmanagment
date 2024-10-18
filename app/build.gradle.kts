@@ -13,10 +13,11 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("${projectDir}" + "/keystore/devtestjks.jks")
-            storePassword = "developer"
-            keyAlias = "developer"
-            keyPassword = "developer"
+            storeFile = file("../keystore.jks")
+            storePassword = System.getenv("RELEASE_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+            keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+
         }
         getByName("debug"){
             storeFile = file("${projectDir}" + "/keystore/devtestjks.jks")
