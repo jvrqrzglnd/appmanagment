@@ -34,6 +34,7 @@ jobs:
           #TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
           #mkdir "${TMP_KEYSTORE_FILE_PATH}"
           #echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/keystore.jks
+
         run: |
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
