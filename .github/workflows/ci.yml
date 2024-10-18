@@ -44,7 +44,7 @@ jobs:
         #run: |
           #TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
           #echo "jksfile=$(find "${RUNNER_TEMP}"/keystore.jks)" >> $GITHUB_OUTPUT
-        run: echo "jksfile=$(find app/*.jks)" >> $GITHUB_OUTPUT
+        run: echo "jksfile=$(find appmanagment/*.jks)" >> $GITHUB_OUTPUT
 
       - name: Build App
         env:
