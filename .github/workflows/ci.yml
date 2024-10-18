@@ -39,14 +39,13 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
 
-      - name: Get keystore file  path
-        id: keystoreFile
-        #run: |
-          #TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
-          #echo "jksfile=$(find "${RUNNER_TEMP}"/keystore.jks)" >> $GITHUB_OUTPUT
-        run: echo "jksfile=$(find appmanagment/*.jks)" >> $GITHUB_OUTPUT
-
-      - name: Build App
+      - name: Build Release Apk
+        env:
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --stacktrace
+      - name: Build Release Bundle
         env:
           RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
@@ -58,9 +57,14 @@ jobs:
         id: releaseAab
         run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
 
+      - name: Get release file apk path
+        id: releaseApk
+        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+
+
       - name: print results
         run: |
-          echo "JKS file path: ${{ steps.keystoreFile.outputs.jksfile }}"
+          echo "APK file path: ${{ steps.releaseApk.outputs.apkfile }}"
           echo "AAB file path: ${{ steps.releaseAab.outputs.aabfile }}"
 
 
