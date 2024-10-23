@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.hilt)
     id("androidx.room")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -14,11 +15,14 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("../keystore.jks")
+            /*storeFile = file("../keystore.jks")
             storePassword = System.getenv("RELEASE_KEYSTORE_PASSWORD")
             keyAlias = System.getenv("RELEASE_KEYSTORE_ALIAS")
-            keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
-
+            keyPassword = System.getenv("RELEASE_KEY_PASSWORD")*/
+            storeFile = file("${projectDir}" + "/keystore/devtestjks.jks")
+            storePassword = "developer"
+            keyAlias = "developer"
+            keyPassword = "developer"
         }
         getByName("debug"){
             storeFile = file("${projectDir}" + "/keystore/devtestjks.jks")
@@ -32,8 +36,8 @@ android {
         applicationId = "com.kripto.appmanager"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 4
+        versionName = "4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -43,11 +47,11 @@ android {
 
     buildTypes {
         getByName("debug") {
-            isMinifyEnabled = false
-            /*proguardFiles(
+            isMinifyEnabled = true//false
+            proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
-            )*/
+            )
         }
         getByName("release") {
             isMinifyEnabled = true
@@ -114,6 +118,8 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+
 
 
     implementation(project(":ui"))

@@ -43,7 +43,7 @@
   #@com.google.gson.annotations.SerializedName <fields>;
 }
 
-
+#-keep public class com.kripto.appmanager.model.*
 -keepclassmembers,allowobfuscation class * {
   @com.google.gson.annotations.SerializedName <fields>;
 }
