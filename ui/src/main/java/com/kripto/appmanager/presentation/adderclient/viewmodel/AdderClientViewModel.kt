@@ -26,12 +26,30 @@ class AdderClientViewModel @Inject constructor(
 
 
     override fun onClientNameTyping(value: String) {
-        _uiState.inputClientName = value
+        if(value.length<30){
+            _uiState.inputClientName = value
+        }
+
 
     }
 
     override fun onInputEmployeByStoreTyping(value: String) {
-        _uiState.inputEmployeByStoreCount=value
+        if(value.length<4){
+            _uiState.inputEmployeByStoreCount = value
+            if(value.toIntOrNull() != null && ((value.toIntOrNull() ?: 0) > 0)){
+                viewModelScope.launch(Dispatchers.IO) {
+
+                    _channel.send(AdderClientUiEvent.onInoutRight)
+                }
+            }else{
+                viewModelScope.launch(Dispatchers.IO) {
+
+                    _channel.send(AdderClientUiEvent.onErrorInput)
+                }
+
+            }
+        }
+
     }
 
     override fun onSubmit() {

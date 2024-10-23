@@ -17,7 +17,7 @@ class MutableAdderClientUiState():AdderClientUiState, Updatable {
     override var inputClientName: String by mutableStateOf("")
     override var inputEmployeByStoreCount: String by mutableStateOf("")
     override val enableRegisterButton: Boolean by derivedStateOf {
-        inputClientName.isNotEmpty() && inputEmployeByStoreCount.isNotEmpty()
+        inputClientName.isNotEmpty() && ( inputEmployeByStoreCount.toIntOrNull() != null && (inputEmployeByStoreCount.toIntOrNull() ?: 0) > 0)
     }
     override var showLoadingBlock: Boolean by mutableStateOf(false)
 

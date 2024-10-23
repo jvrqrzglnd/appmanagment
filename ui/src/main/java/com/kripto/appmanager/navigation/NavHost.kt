@@ -20,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kripto.appmanager.presentation.adderclient.AdderClientScreen
 import com.kripto.appmanager.presentation.chooserapp.ChooserAppwareScreen
 import com.kripto.appmanager.presentation.client.ClientScreen
@@ -28,6 +29,7 @@ import com.kripto.appmanager.presentation.resopt.ResOptimizerScreen
 import com.kripto.appmanager.presentation.start.StartScreen
 import com.kripto.appmanager.presentation.store.StoreScreen
 import com.kripto.appmanager.presentation.terminal.TerminalScreen
+import kotlinx.serialization.MissingFieldException
 
 @Composable
 fun MainNavHost(
@@ -205,7 +207,13 @@ fun TopBarNavigation(
             if(!(currentRoute?:"").lowercase().contains("opti") && (currentRoute?:"").lowercase().contains("client")){
                 IconButton(onClick = {
 
-                    val param=navBackStackEntry?.toRoute<ClientScrn>()?:ClientScrn(0)
+                    var param=ClientScrn(0)
+                    try{
+                        param=navBackStackEntry?.toRoute<ClientScrn>()?:ClientScrn(0)
+                    }catch (e: MissingFieldException){
+                        FirebaseCrashlytics.getInstance().recordException(e)
+                    }
+                    //FirebaseCrashlytics.getInstance().recordException(CustomException(message = "prueba jqg"))
 
                     navController.navigate(ResOptScrn(param.clientId))
                 }) {
@@ -220,3 +228,4 @@ fun TopBarNavigation(
 
     )
 }
+class CustomException(message: String) : Exception(message)
