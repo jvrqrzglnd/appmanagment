@@ -89,6 +89,7 @@ fun ClientItem(
             }
             Button(onClick = {
                 onEditNavigate(client)
+                //throw RuntimeException("Test Crash JQG")
             }) {
                 Icon(Icons.Filled.Edit, "+")
             }
