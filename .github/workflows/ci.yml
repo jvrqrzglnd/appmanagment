@@ -119,12 +119,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-bundle
-          path: app/build/outputs/bundle/release
+          #path: app/build/outputs/bundle/release
+
+      #- name: Create service_account.json FROM secrets.SERVICE_ACCOUNT_JSON
+        #run: echo '${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}' > service_account.json
 
       - name: Deploy to Play Store (Internal testing)
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: ${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}
           packageName: com.kripto.myappmanager
-          releaseFiles:  ${{ needs.build.outputs.aab-file-path }}
+          #releaseFiles:  ${{ needs.build.outputs.aab-file-path }}
+          releaseFiles:  app-release.aab
           track: production
