@@ -82,7 +82,7 @@ jobs:
         #run: |
           #echo "APK file path: ${{ steps.releaseApk.outputs.apkfile }}"
           #echo "AAB file path: ${{ steps.releaseAab.outputs.aabfile }}"
-  deploy:
+  deploy-fb:
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -91,11 +91,11 @@ jobs:
           echo "APK file path: ${{ needs.build.outputs.apk-file-path}}"
           echo "AAB file path: ${{ needs.build.outputs.aab-file-path }}"
 
-      - name: Download app bundle from artifact
+      - name: Download app APK from artifact
         uses: actions/download-artifact@v4
         with:
           name: app-apk
-          path: app/build/outputs/apk/release
+          path: app/build/outputs/bundle/release
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -105,3 +105,26 @@ jobs:
           groups: testers
           #file: ${{ steps.releaseApk.outputs.apkfile }}
           file: ${{ needs.build.outputs.apk-file-path }}
+
+  deploy-googleplay:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: print app release files paths
+        run: |
+          echo "APK file path: ${{ needs.build.outputs.apk-file-path}}"
+          echo "AAB file path: ${{ needs.build.outputs.aab-file-path }}"
+
+      - name: Download app Bundle from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-bundle
+          path: app/build/outputs/apk/release
+
+      - name: Deploy to Play Store (Internal testing)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: {{secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY}}
+          packageName: com.kripto.myappmanager
+          releaseFiles:  ${{ needs.build.outputs.aab-file-path }}
+          track: production
