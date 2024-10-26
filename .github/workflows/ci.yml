@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       apk-file-path: ${{ steps.releaseApk.outputs.apkfile }}
-      aab-file-path: ${{ steps.releaseApk.outputs.aabfile }}
+      aab-file-path: ${{ steps.releaseAab.outputs.aabfile }}
     steps:
       - name: checking out
         uses: actions/checkout@v3
