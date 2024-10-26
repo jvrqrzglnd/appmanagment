@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      apk-file-path: ${{ steps.releaseApk.outputs.apkfile }}
+      aab-file-path: ${{ steps.releaseApk.outputs.aabfile }}
     steps:
       - name: checking out
         uses: actions/checkout@v3
@@ -76,4 +79,5 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
-          file: ${{ steps.releaseApk.outputs.apkfile }}
+          #file: ${{ steps.releaseApk.outputs.apkfile }}
+          file: ${{ needs.build.outputs.apk-file-path }}
