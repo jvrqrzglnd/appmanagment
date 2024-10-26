@@ -122,12 +122,13 @@ jobs:
           #path: app/build/outputs/bundle/release
 
       #- name: Create service_account.json FROM secrets.SERVICE_ACCOUNT_JSON
-        #run: echo '${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}' > service_account.json
+        #run: echo '${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}' > google_play_service_account.json
 
       - name: Deploy to Play Store (Internal testing)
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJson: ${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}
+          serviceAccountJsonPlainText: ${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}
+          #serviceAccountJson: google_play_service_account.json
           packageName: com.kripto.myappmanager
           #releaseFiles:  ${{ needs.build.outputs.aab-file-path }}
           releaseFiles:  app-release.aab
