@@ -66,7 +66,9 @@ jobs:
         run: |
           echo "APK file path: ${{ steps.releaseApk.outputs.apkfile }}"
           echo "AAB file path: ${{ steps.releaseAab.outputs.aabfile }}"
-
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
@@ -74,5 +76,3 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
           file: ${{ steps.releaseApk.outputs.apkfile }}
-
-
