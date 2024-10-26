@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "276941932804",
-    "project_id": "appmanagment-bee02",
-    "storage_bucket": "appmanagment-bee02.appspot.com"
+    "project_number": "806458293800",
+    "project_id": "my-app-manager-1842e",
+    "storage_bucket": "my-app-manager-1842e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:276941932804:android:c64c035d89b299ae256851",
+        "mobilesdk_app_id": "1:806458293800:android:96b1abb40f975daf223f1d",
         "android_client_info": {
-          "package_name": "com.kripto.appmanager"
+          "package_name": "com.kripto.myappmanager"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBjCj97LVR6SjH3mVR_dt9tjwqNgKjZ58g"
+          "current_key": "AIzaSyB1YNcfu3DBCmfipgqtG2nz6fcve8ZGwvA"
         }
       ],
       "services": {

@@ -33,11 +33,11 @@ android {
         //.\gradlew signingReport
     }
     defaultConfig {
-        applicationId = "com.kripto.appmanager"
+        applicationId = "com.kripto.myappmanager"
         minSdk = 24
         targetSdk = 34
-        versionCode = 6
-        versionName = "6.0"
+        versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
