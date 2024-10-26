@@ -124,7 +124,7 @@ jobs:
       - name: Deploy to Play Store (Internal testing)
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJson: {{secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY}}
+          serviceAccountJson: ${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}
           packageName: com.kripto.myappmanager
           releaseFiles:  ${{ needs.build.outputs.aab-file-path }}
           track: production
