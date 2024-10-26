@@ -64,6 +64,19 @@ jobs:
         id: releaseApk
         run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
 
+      - name: Upload app apk as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-apk
+          path: ${{ steps.releaseApk.outputs.apkfile }}
+
+      - name: Upload app bundle as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-bundle
+          path: ${{ steps.releaseAab.outputs.aabfile }}
+
+
 
       #- name: print results
         #run: |
@@ -77,6 +90,11 @@ jobs:
         run: |
           echo "APK file path: ${{ needs.build.outputs.apk-file-path}}"
           echo "AAB file path: ${{ needs.build.outputs.aab-file-path }}"
+
+      - name: Download app bundle from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: app-bundle
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
