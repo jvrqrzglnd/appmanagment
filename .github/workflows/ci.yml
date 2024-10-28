@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-apk
-          path: ${{ steps.releaseApk.outputs.apkfile }}
+          path: $APK_DIR/app-release.apk
 
 #      - name: Upload app bundle as artifact
 #        uses: actions/upload-artifact@v4
