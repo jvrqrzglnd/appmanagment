@@ -59,7 +59,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-apk
-          path: $APK_DIR/app-release.apk
+          path: ${{APK_DIR}}/app-release.apk
+          #path: $APK_DIR/app-release.apk
 
 #      - name: Upload app bundle as artifact
 #        uses: actions/upload-artifact@v4
@@ -80,8 +81,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-apk
-          #path: $APK_DIR
-          path: app/build/outputs/apk/release
+          path: ${{env.APK_DIR}}
+          #path: app/build/outputs/apk/release
+
+
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
@@ -89,7 +92,7 @@ jobs:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
-          file: $APK_DIR/app-release.apk
+          file: ${{env.APK_DIR}}/app-release.apk
           #file: ${{ needs.build.outputs.apk-file-path }}
 
 #  deploy-googleplay:
