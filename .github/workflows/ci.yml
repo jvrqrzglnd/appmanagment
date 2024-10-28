@@ -52,7 +52,7 @@ jobs:
 
       - name: Check release apk exist
         #id: releaseApk
-        run: ls $APK_DIR/*apk
+        run: ls ${{env.APK_DIR}}/*apk
         #run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
 
       - name: Upload app apk as artifact
