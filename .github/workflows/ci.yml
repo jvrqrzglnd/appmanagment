@@ -8,25 +8,26 @@ env:
   APK_DIR: "app/build/outputs/apk/release"
 
 jobs:
-  build:
+
+  build-apk-aab:
     env:
       RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
       RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
       RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
       KEYSTORE_FILE_B64_STRING: ${{ secrets.KEYSTORE_BASE_64 }}
     runs-on: ubuntu-latest
-#    outputs:
-#      apk-file-path: ${{ steps.releaseApk.outputs.apkfile }}
-#      aab-file-path: ${{ steps.releaseAab.outputs.aabfile }}
     steps:
+
       - name: checking out
         uses: actions/checkout@v3
+
       - name: set up jdk
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+
       - name: setup gradle
         uses: gradle/gradle-build-action@v2
 
@@ -34,7 +35,6 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Decode keystore b64 string to file
-
         run: |
           echo $KEYSTORE_FILE_B64_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
@@ -42,83 +42,61 @@ jobs:
       - name: Build release apk
         run: ./gradlew assembleRelease --stacktrace
 
-#      - name: Build release bundle
-#        run:  ./gradlew bundleRelease --stacktrace
-
-#      - name: Check release aab exist
-#        #id: releaseAab
-#        run: ls $BUNDLE_DIR/*apk
-#        #run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
+      - name: Build release bundle
+        run:  ./gradlew bundleRelease --stacktrace
 
       - name: Check release apk exist
-        #id: releaseApk
         run: ls ${{env.APK_DIR}}/*apk
-        #run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
 
-      - name: Upload app apk as artifact
+      - name: Check release aab exist
+        run: ls ${{env.BUNDLE_DIR}}/*aab
+
+      - name: Upload Apk as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-apk
+          name: uda-apk
           path: ${{env.APK_DIR}}/app-release.apk
-          #path: $APK_DIR/app-release.apk
 
-#      - name: Upload app bundle as artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: app-bundle
-#          path: ${{ steps.releaseAab.outputs.aabfile }}
+      - name: Upload Bundle as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: uda-bundle
+          path: ${{env.BUNDLE_DIR}}/app-release.aab
 
-  deploy-firebase-distribution:
+  deploy-firebase-app-distribution:
     runs-on: ubuntu-latest
     needs: build
     steps:
-#      - name: print app release files paths
-#        run: |
-#          echo "APK file path: ${{ needs.build.outputs.apk-file-path}}"
-#          echo "AAB file path: ${{ needs.build.outputs.aab-file-path }}"
 
-      - name: Download app APK from artifact
+      - name: Download APK from artifact
         uses: actions/download-artifact@v4
         with:
-          name: app-apk
+          name: uda-apk
           path: ${{env.APK_DIR}}
-          #path: app/build/outputs/apk/release
 
-
-
-      - name: upload artifact to Firebase App Distribution
+      - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
           file: ${{env.APK_DIR}}/app-release.apk
-          #file: ${{ needs.build.outputs.apk-file-path }}
 
-#  deploy-googleplay:
-#    runs-on: ubuntu-latest
-#    needs: build
-#    steps:
-#      - name: print app release files paths
-#        run: |
-#          echo "APK file path: ${{ needs.build.outputs.apk-file-path}}"
-#          echo "AAB file path: ${{ needs.build.outputs.aab-file-path }}"
-#
-#      - name: Download app Bundle from artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: app-bundle
-#          #path: app/build/outputs/bundle/release
-#
-#      #- name: Create service_account.json FROM secrets.SERVICE_ACCOUNT_JSON
-#        #run: echo '${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}' > google_play_service_account.json
-#
-#      - name: Deploy to Play Store (Internal testing)
-#        uses: r0adkll/upload-google-play@v1
-#        with:
-#          serviceAccountJsonPlainText: ${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}
-#          #serviceAccountJson: google_play_service_account.json
-#          packageName: com.kripto.myappmanager
-#          #releaseFiles:  ${{ needs.build.outputs.aab-file-path }}
-#          releaseFiles:  app-release.aab
-#          track: production
+  deploy-googleplay:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+
+      - name: Download Bundle from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: uda-bundle
+          path: ${{env.BUNDLE_DIR}}
+
+      - name: Upload artifact to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}
+          packageName: com.kripto.myappmanager
+          releaseFiles:  ${{env.BUNDLE_DIR}}/app-release.aab
+          track: production
