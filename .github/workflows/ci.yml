@@ -4,17 +4,20 @@ on:
   push:
     branches: [ "development" ]
 env:
-  RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-  RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
-  RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
-  KEYSTORE_FILE_B64_STRING: ${{ secrets.KEYSTORE_BASE_64 }}
+  BUNDLE_DIR: "app/build/outputs/bundle/release"
+  APK_DIR: "app/build/outputs/apk/release"
 
 jobs:
   build:
+    env:
+      RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+      RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
+      RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+      KEYSTORE_FILE_B64_STRING: ${{ secrets.KEYSTORE_BASE_64 }}
     runs-on: ubuntu-latest
-    outputs:
-      apk-file-path: ${{ steps.releaseApk.outputs.apkfile }}
-      aab-file-path: ${{ steps.releaseAab.outputs.aabfile }}
+#    outputs:
+#      apk-file-path: ${{ steps.releaseApk.outputs.apkfile }}
+#      aab-file-path: ${{ steps.releaseAab.outputs.aabfile }}
     steps:
       - name: checking out
         uses: actions/checkout@v3
@@ -30,37 +33,27 @@ jobs:
       - name: making gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Decode Keystore
-#        env:
-#          ENCODED_STRING: ${{ secrets.KEYSTORE_BASE_64 }}
-#          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-#          RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
-#          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+      - name: Decode keystore b64 string to file
 
         run: |
           echo $KEYSTORE_FILE_B64_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > keystore.jks
 
-      - name: Build Release Apk
-#        env:
-#          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-#          RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
-#          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+      - name: Build release apk
         run: ./gradlew assembleRelease --stacktrace
-      - name: Build Release Bundle
-#        env:
-#          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
-#          RELEASE_KEYSTORE_ALIAS: ${{ secrets.RELEASE_KEYSTORE_ALIAS }}
-#          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
-        run:  ./gradlew bundleRelease --stacktrace
 
-      - name: Get release file aab path
-        id: releaseAab
-        run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
+#      - name: Build release bundle
+#        run:  ./gradlew bundleRelease --stacktrace
 
-      - name: Get release file apk path
-        id: releaseApk
-        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+#      - name: Check release aab exist
+#        #id: releaseAab
+#        run: ls $BUNDLE_DIR/*apk
+#        #run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
+
+      - name: Check release apk exist
+        #id: releaseApk
+        run: ls $APK_DIR/*apk
+        #run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
 
       - name: Upload app apk as artifact
         uses: actions/upload-artifact@v4
@@ -68,20 +61,20 @@ jobs:
           name: app-apk
           path: ${{ steps.releaseApk.outputs.apkfile }}
 
-      - name: Upload app bundle as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-bundle
-          path: ${{ steps.releaseAab.outputs.aabfile }}
+#      - name: Upload app bundle as artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: app-bundle
+#          path: ${{ steps.releaseAab.outputs.aabfile }}
 
-  deploy-fb:
+  deploy-firebase-distribution:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: print app release files paths
-        run: |
-          echo "APK file path: ${{ needs.build.outputs.apk-file-path}}"
-          echo "AAB file path: ${{ needs.build.outputs.aab-file-path }}"
+#      - name: print app release files paths
+#        run: |
+#          echo "APK file path: ${{ needs.build.outputs.apk-file-path}}"
+#          echo "AAB file path: ${{ needs.build.outputs.aab-file-path }}"
 
       - name: Download app APK from artifact
         uses: actions/download-artifact@v4
