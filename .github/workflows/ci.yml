@@ -1,4 +1,4 @@
-name: My App Manager Workflow
+name: My New Workflow
 
 on:
   push:
@@ -51,52 +51,62 @@ jobs:
       - name: Check release aab exist
         run: ls ${{env.BUNDLE_DIR}}/*aab
 
-      - name: Upload Apk as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: uda-apk
-          path: ${{env.APK_DIR}}/app-release.apk
+#      - name: Upload Apk as artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: uda-apk
+#          path: ${{env.APK_DIR}}/app-release.apk
+#
+#      - name: Upload Bundle as artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: uda-bundle
+#          path: ${{env.BUNDLE_DIR}}/app-release.aab
 
-      - name: Upload Bundle as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: uda-bundle
-          path: ${{env.BUNDLE_DIR}}/app-release.aab
 
-  deploy-firebase-app-distribution:
-    runs-on: ubuntu-latest
-    needs: build-apk-aab
-    steps:
 
-      - name: Download APK from artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: uda-apk
-          path: ${{env.APK_DIR}}
 
-      - name: Upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
-          file: ${{env.APK_DIR}}/app-release.apk
 
-  deploy-googleplay:
-    runs-on: ubuntu-latest
-    needs: build-apk-aab
-    steps:
 
-      - name: Download Bundle from artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: uda-bundle
-          path: ${{env.BUNDLE_DIR}}
 
-      - name: Upload artifact to Google Play
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}
-          packageName: com.kripto.myappmanager
-          releaseFiles:  ${{env.BUNDLE_DIR}}/app-release.aab
-          track: production
+
+
+
+
+#  deploy-firebase-app-distribution:
+#    runs-on: ubuntu-latest
+#    needs: build-apk-aab
+#    steps:
+#
+#      - name: Download APK from artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: uda-apk
+#          path: ${{env.APK_DIR}}
+#
+#      - name: Upload artifact to Firebase App Distribution
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{secrets.FIREBASE_APP_ID}}
+#          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+#          groups: testers
+#          file: ${{env.APK_DIR}}/app-release.apk
+#
+#  deploy-googleplay:
+#    runs-on: ubuntu-latest
+#    needs: build-apk-aab
+#    steps:
+#
+#      - name: Download Bundle from artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: uda-bundle
+#          path: ${{env.BUNDLE_DIR}}
+#
+#      - name: Upload artifact to Google Play
+#        uses: r0adkll/upload-google-play@v1
+#        with:
+#          serviceAccountJsonPlainText: ${{ secrets.JSON_SERVICE_ACCOUNT_GOOGLE_PLAY }}
+#          packageName: com.kripto.myappmanager
+#          releaseFiles:  ${{env.BUNDLE_DIR}}/app-release.aab
+#          track: production
